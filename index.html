@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>نظام مبسط للسحوبات والمبيعات</title>
+  <style>
+    body { font-family: Tahoma, Arial, sans-serif; margin: 20px; }
+    nav a { margin: 0 8px; }
+    input, select { padding: 6px; margin: 4px 0; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    th { background: #f5f5f5; }
+    .section { margin-top: 20px; }
+    .row { display: flex; gap: 20px; }
+    .card { border: 1px solid #eee; padding: 12px; flex: 1; }
+    button { padding: 8px 12px; }
+  </style>
+</head>
+<body>
+  <h1>لوحة النظام المبسطة</h1>
+  <nav>
+    <a href="#" onclick="show('employees')">الموظفون</a>
+    <a href="#" onclick="show('customers')">الزبائن</a>
+    <a href="#" onclick="show('items')">القطع</a>
+    <a href="#" onclick="show('withdrawals')">السحوبات</a>
+    <a href="#" onclick="show('sales')">المبيعات</a>
+    <a href="#" onclick="show('payments')">المدفوعات</a>
+    <a href="#" onclick="show('reports')">التقارير</a>
+  </nav>
+
+  <div id="employees" class="section" style="display:none">
+    <h2>الموظفون</h2>
+    <div class="row">
+      <div class="card">
+        <h3>إضافة موظف</h3>
+        <input id="e-name" placeholder="اسم الموظف">
+        <button onclick="addEmployee()">إضافة</button>
+      </div>
+      <div class="card">
+        <h3>قائمة</h3>
+        <table id="employees-table"></table>
+      </div>
+    </div>
+  </div>
+
+  <div id="customers" class="section" style="display:none">
+    <h2>الزبائن</h2>
+    <div class="row">
+      <div class="card">
+        <h3>إضافة زبون</h3>
+        <input id="c-name" placeholder="اسم الزبون">
+        <input id="c-phone" placeholder="الهاتف">
+        <input id="c-address" placeholder="العنوان">
+        <button onclick="addCustomer()">إضافة</button>
+      </div>
+      <div class="card">
+        <h3>قائمة</h3>
+        <table id="customers-table"></table>
+      </div>
+    </div>
+  </div>
+
+  <div id="items" class="section" style="display:none">
+    <h2>القطع</h2>
+    <div class="row">
+      <div class="card">
+        <h3>إضافة قطعة</h3>
+        <input id="i-name" placeholder="اسم القطعة">
+        <input id="i-buy" placeholder="سعر الشراء" type="number" step="0.01">
+        <input id="i-sell" placeholder="سعر البيع" type="number" step="0.01">
+        <button onclick="addItem()">إضافة</button>
+      </div>
+      <div class="card">
+        <h3>قائمة</h3>
+        <table id="items-table"></table>
+      </div>
+    </div>
+  </div>
+
+  <div id="withdrawals" class="section" style="display:none">
+    <h2>السحوبات</h2>
+    <div class="row">
+      <div class="card">
+        <h3>تسجيل سحب</h3>
+        <select id="w-employeeSel"></select>
+        <select id="w-itemSel"></select>
+        <select id="w-customerSel"></select>
+        <input id="w-date" placeholder="تاريخ السحب" type="date">
+        <input id="w-buyPrice" placeholder="سعر الشراء" type="number" step="0.01">
+        <input id="w-invoice" placeholder="رقم فاتورة المورد">
+        <select id="w-status">
+          <option value="unsold">لم تُبع</option>
+          <option value="sold">تم بيعها</option>
+        </select>
+        <input id="w-notes" placeholder="ملاحظات">
+        <button onclick="addWithdrawal()">تسجيل</button>
+      </div>
+      <div class="card">
+        <h3>قائمة</h3>
+        <table id="withdrawals-table"></table>
+      </div>
+    </div>
+  </div>
+
+  <div id="sales" class="section" style="display:none">
+    <h2>المبيعات</h2>
+    <div class="row">
+      <div class="card">
+        <h3>تسجيل بيع</h3>
+        <select id="s-withdrawalSel"></select>
+        <select id="s-customerSel"></select>
+        <input id="s-sellPrice" placeholder="سعر البيع" type="number" step="0.01">
+        <input id="s-saleDate" placeholder="تاريخ البيع" type="date">
+        <button id="s-register" onclick="addSale()">تسجيل</button>
+      </div>
+      <div class="card">
+        <h3>قائمة</h3>
+        <table id="sales-table"></table>
+      </div>
+    </div>
+  </div>
+
+  <div id="payments" class="section" style="display:none">
+    <h2>المدفوعات</h2>
+    <div class="row">
+      <div class="card">
+        <h3>استلام دفع</h3>
+        <select id="p-saleSel"></select>
+        <input id="p-amount" placeholder="المبلغ" type="number" step="0.01">
+        <input id="p-date" placeholder="تاريخ الاستلام" type="date">
+        <select id="p-employeeSel"></select>
+        <input id="p-method" placeholder="طريقة الدفع">
+        <button onclick="addPayment()">تسجيل</button>
+      </div>
+      <div class="card">
+        <h3>قائمة</h3>
+        <table id="payments-table"></table>
+      </div>
+    </div>
+  </div>
+
+  <div id="reports" class="section" style="display:none">
+    <h2>التقارير</h2>
+    <div class="row">
+      <div class="card">
+        <h3>كشف الديون</h3>
+        <input id="r-overdue" placeholder="تأخر بالأيام" type="number">
+        <button onclick="loadDebts()">عرض</button>
+        <button onclick="exportDebtsCSV()">تصدير CSV</button>
+        <table id="debts-table"></table>
+      </div>
+      <div class="card">
+        <h3>ملخص الفترة</h3>
+        <input id="sum-from" placeholder="من" type="date">
+        <input id="sum-to" placeholder="إلى" type="date">
+        <button onclick="loadSummary()">عرض</button>
+        <table id="summary-table"></table>
+      </div>
+      <div class="card">
+        <h3>أداء الموظفين</h3>
+        <input id="emp-from" placeholder="من" type="date">
+        <input id="emp-to" placeholder="إلى" type="date">
+        <button onclick="loadEmployeesPerformance()">عرض</button>
+        <button onclick="exportEmployeesCSV()">تصدير CSV</button>
+        <table id="employees-perf-table"></table>
+      </div>
+      <div class="card">
+        <h3>تقارير القطع</h3>
+        <button onclick="loadItemsReport()">عرض</button>
+        <button onclick="exportItemsCSV()">تصدير CSV</button>
+        <table id="items-report-table"></table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = window.location.origin + '/api';
+    async function api(path, opts){
+      const url1 = API_BASE + path;
+      const url2 = window.location.origin + path;
+      console.log('API ->', url1, opts&&opts.method||'GET');
+      let r = await fetch(url1, opts);
+        const ct = r.headers.get('content-type')||'';
+        if (ct.includes('application/json')) {
+          const j = await r.json();
+          if (!r.ok) throw new Error(j.error||'error');
+          return j;
+        } else {
+          console.warn('API non-JSON, retry root path');
+          r = await fetch(url2, opts);
+          const ct2 = r.headers.get('content-type')||'';
+          if (ct2.includes('application/json')) {
+            const j2 = await r.json();
+            if (!r.ok) throw new Error(j2.error||'error');
+            return j2;
+          }
+          const t2 = await r.text();
+          throw new Error('استجابة غير JSON ('+r.status+'): ' + t2.slice(0,120));
+        }
+      
+    }
+    async function testApi(){
+      try { const h = await api('/health'); alert('API OK: ' + JSON.stringify(h)); }
+      catch(e){ alert('API ERROR: ' + e.message); }
+    }
+    function show(id) {
+      document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+      document.getElementById(id).style.display = 'block';
+      if (id==='employees') loadEmployees();
+      if (id==='customers') loadCustomers();
+      if (id==='items') loadItems();
+      if (id==='withdrawals') loadWithdrawals();
+      if (id==='sales') loadSales();
+      if (id==='payments') loadPayments();
+    }
+
+    async function loadEmployees(){
+      const list = await api('/employees');
+      const t = document.getElementById('employees-table');
+      t.innerHTML = '<tr><th>رقم</th><th>اسم</th></tr>' + list.map(e=>`<tr><td>${e.id}</td><td>${e.name}</td></tr>`).join('');
+      fillSelect('w-employeeSel', list.map(e=>({v:e.id, t:`${e.name} (#${e.id})`})));
+      fillSelect('p-employeeSel', list.map(e=>({v:e.id, t:`${e.name} (#${e.id})`})));
+    }
+    async function addEmployee(){
+      const name = val('e-name').trim();
+      if (!name) { alert('يرجى إدخال اسم الموظف'); return; }
+      const data = { name };
+      try { await api('/employees',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)}); loadEmployees(); document.getElementById('e-name').value=''; } catch(e){ alert(e.message); }
+    }
+
+    async function loadCustomers(){
+      const list = await api('/customers');
+      const t = document.getElementById('customers-table');
+      t.innerHTML = '<tr><th>رقم</th><th>اسم</th><th>هاتف</th><th>العنوان</th></tr>' + list.map(c=>`<tr><td>${c.id}</td><td>${c.name}</td><td>${c.phone||''}</td><td>${c.address||''}</td></tr>`).join('');
+      fillSelect('w-customerSel', [{v:'', t:'— بدون زبون —'}].concat(list.map(c=>({v:c.id, t:`${c.name} (#${c.id})`}))));
+      fillSelect('s-customerSel', list.map(c=>({v:c.id, t:`${c.name} (#${c.id})`})));
+    }
+    async function addCustomer(){
+      const data = { name: val('c-name'), phone: val('c-phone'), address: val('c-address') };
+      try { await api('/customers',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)}); loadCustomers(); } catch(e){ alert(e.message); }
+    }
+
+    async function loadItems(){
+      const list = await api('/items');
+      const t = document.getElementById('items-table');
+      t.innerHTML = '<tr><th>رقم</th><th>اسم</th><th>شراء</th><th>بيع</th></tr>' + list.map(i=>`<tr><td>${i.id}</td><td>${i.name}</td><td>${i.buyPrice||''}</td><td>${i.sellPrice||''}</td></tr>`).join('');
+      fillSelect('w-itemSel', list.map(i=>({v:i.id, t:`${i.name} (#${i.id})`})));
+    }
+    async function addItem(){
+      const data = { name: val('i-name'), buyPrice: num('i-buy'), sellPrice: num('i-sell') };
+      try { await api('/items',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)}); loadItems(); } catch(e){ alert(e.message); }
+    }
+
+    async function loadWithdrawals(){
+      const list = await api('/withdrawals');
+      const employees = await api('/employees');
+      const items = await api('/items');
+      const customers = await api('/customers');
+      const empMap = Object.fromEntries(employees.map(e=>[e.id, e.name]));
+      const itemMap = Object.fromEntries(items.map(i=>[i.id, i.name]));
+      const custMap = Object.fromEntries(customers.map(c=>[c.id, c.name]));
+      const t = document.getElementById('withdrawals-table');
+      t.innerHTML = '<tr><th>رقم</th><th>موظف</th><th>قطعة</th><th>زبون</th><th>تاريخ</th><th>سعر شراء</th><th>حالة</th></tr>' +
+        list.map(w=>`<tr><td>${w.id}</td><td>${empMap[w.employeeId]||w.employeeId}</td><td>${itemMap[w.itemId]||w.itemId}</td><td>${w.customerId? (custMap[w.customerId]||w.customerId) : ''}</td><td>${w.withdrawDate}</td><td>${w.buyPrice}</td><td>${w.status}</td></tr>`).join('');
+    }
+    async function addWithdrawal(){
+      const employeeId = Number(val('w-employeeSel')) || 1;
+      const itemId = Number(val('w-itemSel'));
+      const customerId = val('w-customerSel') ? Number(val('w-customerSel')) : null;
+      const withdrawDate = val('w-date') ? val('w-date') : new Date().toISOString().slice(0,10);
+      const buyPrice = Number(val('w-buyPrice')) || 0;
+      const supplierInvoiceNo = val('w-invoice');
+      const status = val('w-status') || 'unsold';
+      const notes = val('w-notes');
+      const data = { employeeId, itemId, customerId, withdrawDate, buyPrice, supplierInvoiceNo, status, notes };
+      try { await api('/withdrawals',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)}); loadWithdrawals(); } catch(e){ alert(e.message); }
+    }
+
+    async function loadSales(){
+      const list = await api('/sales');
+      let unsold;
+      try {
+        unsold = await api('/withdrawals?status=unsold');
+      } catch(e) {
+        const all = await api('/withdrawals');
+        unsold = Array.isArray(all) ? all.filter(w=>w.status==='unsold') : [];
+      }
+      const items = await api('/items');
+      const itemMap = Object.fromEntries(items.map(i=>[i.id, i.name]));
+      const customers = await api('/customers');
+      const custMap = Object.fromEntries(customers.map(c=>[c.id, c.name]));
+      let wOpts = [{v:'', t:'— اختر سحب —'}];
+      if (unsold.length > 0) {
+        wOpts = wOpts.concat(unsold.map(w=>({v:w.id, t:`سحب #${w.id} (${itemMap[w.itemId]||('قطعة #'+w.itemId)})`})));
+      } else {
+        wOpts = wOpts.concat(items.map(i=>({v:`item:${i.id}`, t:`${i.name} (#${i.id})`})));
+      }
+      fillSelect('s-withdrawalSel', wOpts);
+      fillSelect('s-customerSel', customers.map(c=>({v:c.id, t:`${c.name} (#${c.id})`})));
+      const btn = document.getElementById('s-register');
+      btn.disabled = false;
+      const t = document.getElementById('sales-table');
+      t.innerHTML = '<tr><th>رقم</th><th>سحب</th><th>زبون</th><th>سعر البيع</th><th>تاريخ</th></tr>' +
+        list.map(s=>`<tr><td>${s.id}</td><td>${s.withdrawalId}</td><td>${custMap[s.customerId]||s.customerId}</td><td>${s.sellPrice}</td><td>${s.saleDate}</td></tr>`).join('');
+    }
+    async function addSale(){
+      const selVal = val('s-withdrawalSel');
+      let withdrawalId = Number(selVal);
+      const customerId = Number(val('s-customerSel'));
+      const sellPrice = Number(val('s-sellPrice')) || 0;
+      const saleDate = val('s-saleDate') ? val('s-saleDate') : new Date().toISOString().slice(0,10);
+      if ((!withdrawalId || isNaN(withdrawalId)) && selVal && selVal.startsWith('item:')) {
+        const itemId = Number(selVal.split(':')[1]);
+        const wReq = { employeeId: 1, itemId, customerId, withdrawDate: saleDate, buyPrice: 0, status: 'unsold' };
+        try { const w = await api('/withdrawals',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(wReq)}); withdrawalId = Number(w.id); }
+        catch(e){ alert('تعذر إنشاء سحب تلقائي: '+e.message); return; }
+      }
+      if (!withdrawalId || isNaN(withdrawalId)) { alert('يرجى اختيار سحب'); return; }
+      if (!customerId || isNaN(customerId)) { alert('يرجى اختيار زبون'); return; }
+      if (!(sellPrice > 0)) { alert('يرجى إدخال سعر بيع صحيح'); return; }
+      const data = { withdrawalId, customerId, sellPrice, saleDate };
+      try { await api('/sales',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)}); loadSales(); } catch(e){ alert(e.message); }
+    }
+
+    async function loadPayments(){
+      const list = await api('/payments');
+      const sales = await api('/sales');
+      const employees = await api('/employees');
+      const customers = await api('/customers');
+      const empMap = Object.fromEntries(employees.map(e=>[e.id, e.name]));
+      const custMap = Object.fromEntries(customers.map(c=>[c.id, c.name]));
+      fillSelect('p-saleSel', sales.map(s=>({v:s.id, t:`بيع #${s.id} (زبون ${custMap[s.customerId]||s.customerId})`})));
+      fillSelect('p-employeeSel', employees.map(e=>({v:e.id, t:`${e.name} (#${e.id})`})));
+      const t = document.getElementById('payments-table');
+      t.innerHTML = '<tr><th>رقم</th><th>بيع</th><th>زبون</th><th>مبلغ</th><th>تاريخ</th><th>الموظف</th></tr>' +
+        list.map(p=>`<tr><td>${p.id}</td><td>${p.saleId}</td><td>${custMap[p.customerId]||p.customerId}</td><td>${p.amount}</td><td>${p.paymentDate}</td><td>${empMap[p.receivedByEmployeeId]||p.receivedByEmployeeId}</td></tr>`).join('');
+    }
+    async function addPayment(){
+      const saleId = Number(val('p-saleSel'));
+      const amount = Number(val('p-amount')) || 0;
+      const paymentDate = val('p-date') ? val('p-date') : new Date().toISOString().slice(0,10);
+      const receivedByEmployeeId = Number(val('p-employeeSel')) || 1;
+      const method = val('p-method');
+      const data = { saleId, amount, paymentDate, receivedByEmployeeId, method };
+      try { await api('/payments',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)}); loadPayments(); } catch(e){ alert(e.message); }
+    }
+
+    async function loadDebts(){
+      const od = document.getElementById('r-overdue').value || 0;
+      const list = await api('/reports/debts?overdue_days='+od);
+      const t = document.getElementById('debts-table');
+      t.innerHTML = '<tr><th>بيع</th><th>زبون</th><th>متبقي</th><th>أيام التأخير</th><th>متأخر؟</th></tr>' +
+        list.map(d=>`<tr><td>${d.saleId}</td><td>${d.customerName}</td><td>${d.remaining}</td><td>${d.daysSinceSale}</td><td>${d.overdue? 'نعم':'لا'}</td></tr>`).join('');
+    }
+    function exportDebtsCSV(){
+      const rows = Array.from(document.querySelectorAll('#debts-table tr')).map(tr=>Array.from(tr.children).map(td=>td.textContent));
+      downloadCSV('debts.csv', rows);
+    }
+    async function loadSummary(){
+      const from = val('sum-from');
+      const to = val('sum-to');
+      const r = await api(`/reports/summary?from=${from||''}&to=${to||''}`);
+      const t = document.getElementById('summary-table');
+      t.innerHTML = '<tr><th>عدد المبيعات</th><th>إيراد المبيعات</th><th>المدفوعات</th><th>متبقي</th><th>مباع</th><th>غير مباع</th><th>متوسط سعر</th></tr>' +
+        `<tr><td>${r.totalSalesCount}</td><td>${r.totalSalesRevenue}</td><td>${r.totalPayments}</td><td>${r.outstanding}</td><td>${r.soldCount}</td><td>${r.unsoldCount}</td><td>${r.avgSellPrice.toFixed(2)}</td></tr>`;
+    }
+    async function loadEmployeesPerformance(){
+      const from = val('emp-from');
+      const to = val('emp-to');
+      const list = await api(`/reports/sales_by_employee?from=${from||''}&to=${to||''}`);
+      const t = document.getElementById('employees-perf-table');
+      t.innerHTML = '<tr><th>الموظف</th><th>سحوبات</th><th>مبيعات</th><th>إيراد المبيعات</th><th>المبالغ المستلمة</th></tr>' +
+        list.map(e=>`<tr><td>${e.employeeName}</td><td>${e.withdrawalsCount}</td><td>${e.salesCount}</td><td>${e.salesTotal}</td><td>${e.paymentsSum}</td></tr>`).join('');
+    }
+    async function loadItemsReport(){
+      const list = await api('/reports/items');
+      const t = document.getElementById('items-report-table');
+      t.innerHTML = '<tr><th>القطعة</th><th>سحوبات</th><th>مباع</th><th>غير مباع</th><th>إيراد</th><th>تكلفة شراء</th><th>ربح</th></tr>' +
+        list.map(i=>`<tr><td>${i.itemName}</td><td>${i.withdrawalsCount}</td><td>${i.soldCount}</td><td>${i.unsoldCount}</td><td>${i.revenue}</td><td>${i.buyTotal}</td><td>${i.profit}</td></tr>`).join('');
+    }
+    function exportEmployeesCSV(){
+      const rows = Array.from(document.querySelectorAll('#employees-perf-table tr')).map(tr=>Array.from(tr.children).map(td=>td.textContent));
+      downloadCSV('employees_performance.csv', rows);
+    }
+    function exportItemsCSV(){
+      const rows = Array.from(document.querySelectorAll('#items-report-table tr')).map(tr=>Array.from(tr.children).map(td=>td.textContent));
+      downloadCSV('items_report.csv', rows);
+    }
+    function val(id){ return document.getElementById(id).value; }
+    function num(id){ return Number(val(id)); }
+    function fillSelect(id, options){ const el = document.getElementById(id); el.innerHTML = options.map(o=>`<option value="${o.v}">${o.t}</option>`).join(''); }
+    function downloadCSV(filename, rows){ const csv = rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n'); const blob = new Blob([csv], {type:'text/csv'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = filename; a.click(); URL.revokeObjectURL(a.href); }
+    
+    show('employees');
+    loadEmployees();
+    loadCustomers();
+    loadItems();
+  </script>
+</body>
+</html>

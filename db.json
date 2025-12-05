@@ -1,0 +1,72 @@
+{
+  "employees": [
+    {
+      "id": 1,
+      "name": "موظف افتراضي"
+    },
+    {
+      "id": 2,
+      "name": "مؤمن"
+    }
+  ],
+  "customers": [
+    {
+      "id": 1,
+      "name": "اسلام",
+      "phone": "0936458755",
+      "address": "ديرك - احمد مول"
+    }
+  ],
+  "items": [
+    {
+      "id": 1,
+      "name": "Lite M5",
+      "buyPrice": 60,
+      "sellPrice": 65
+    }
+  ],
+  "withdrawals": [
+    {
+      "id": 1,
+      "employeeId": 2,
+      "itemId": 1,
+      "customerId": 1,
+      "withdrawDate": "2025-12-05",
+      "buyPrice": 60,
+      "supplierInvoiceNo": "1",
+      "status": "sold",
+      "notes": null
+    },
+    {
+      "id": 2,
+      "employeeId": 1,
+      "itemId": 1,
+      "customerId": 1,
+      "withdrawDate": "2025-12-05",
+      "buyPrice": 0,
+      "supplierInvoiceNo": null,
+      "status": "sold",
+      "notes": null
+    }
+  ],
+  "sales": [
+    {
+      "id": 1,
+      "withdrawalId": 2,
+      "customerId": 1,
+      "sellPrice": 65,
+      "saleDate": "2025-12-05"
+    }
+  ],
+  "payments": [
+    {
+      "id": 1,
+      "saleId": 1,
+      "customerId": 1,
+      "amount": 50,
+      "paymentDate": "2025-12-05",
+      "receivedByEmployeeId": 2,
+      "method": null
+    }
+  ]
+}
